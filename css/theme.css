@@ -1,4 +1,4 @@
-/* Jobs Clock: colours and page-specific styles (loaded after ../shared/clock-base.css) */
+/* Jobs Clock: colours and page-specific styles (loaded after clock-core.css) */
 :root { --accent: #5b9dff; --accent-2: #a9c8ff; --tint: #111c33; --glow: rgba(91,157,255,.35); --on-accent: #07101f; }
 
 :root { --jobs: #5b9dff; --unemp: #ff8a5b; }
@@ -10,8 +10,7 @@
 .hero .stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .versus { margin: 14px 0 40px; padding: 14px 18px; text-align: center; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
 .versus b { color: var(--text); font-family: var(--mono); }
-.ytd.neg { color: var(--bad); }
-.ytd.jobs { color: var(--accent-2); }
+.ytd.neg { color: var(--bad); }   /* net jobs lost */
 .unemp-line { font-family: var(--mono); font-variant-numeric: tabular-nums; color: #ffc59b; font-size: 1.05rem; margin: 0 0 8px; }
 .unemp-line small { font-family: system-ui, sans-serif; color: var(--muted); font-size: .75rem; }
 .bar i.u { background: var(--unemp); }
