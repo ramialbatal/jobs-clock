@@ -20,3 +20,10 @@
 .hero-more p { color: var(--muted); font-size: .92rem; max-width: 720px; margin: 10px auto 0; }
 .hero-more b { color: var(--text); font-family: var(--mono); }
 .hero-more .progress { max-width: 640px; }
+
+/* The widget (?embed=1): clock-core shows only the answer and .hero inside main. Here the counters sit in .duo, so
+   show it, as one column with the jobs counter only (the second counter and the details stay on the full page). */
+html[data-embed] main > .duo:not(.answer):not(.hero) { display: block !important; margin: 0; }
+html[data-embed] .hero.unemp { display: none; }
+
+[dir="rtl"] #sdg-change { direction: ltr; unicode-bidi: isolate; }   /* "-8%" stays in one piece */

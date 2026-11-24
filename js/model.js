@@ -6,7 +6,10 @@
  * line between neighbouring mid-years (clock-core's interpolateMidYear). "Net new jobs" is net: jobs
  * gained minus jobs lost. No source counts the gross churn for the whole world.
  */
-import { interpolateMidYear, shown, SEC_PER_YEAR, YEAR } from "clock-core";
+import { interpolateMidYear, shown, SEC_PER_YEAR, YEAR, t, addStrings } from "clock-core";
+import en from "./i18n/en.js";
+
+addStrings("en", en);   // the verdict words (messages.js registers the same table; either may load first)
 
 /** @typedef {Record<number, number>} Series  People (or %) by year. */
 /** @typedef {import("clock-core").Verdict} Verdict */
@@ -58,10 +61,10 @@ export function jobsEntry(emp, une, rate, year = YEAR) {
  */
 export function keepUpVerdict(e) {
   if (e.per100 == null) return shown(e.yearUne / 1e3, 0) <= 0
-    ? { cls: "ok", text: "Unemployment falling" } : { cls: "bad", text: "Unemployment rising" };
-  if (e.per100 >= 100) return { cls: "ok", text: "Keeping up" };
-  if (e.per100 >= 90) return { cls: "near", text: "Close" };
-  return { cls: "bad", text: "Falling behind" };
+    ? { cls: "ok", key: "onTrack", text: t("v.keep.shrinkDown") } : { cls: "bad", key: "backwards", text: t("v.keep.shrinkUp") };
+  if (e.per100 >= 100) return { cls: "ok", key: "onTrack", text: t("v.keep.ok") };
+  if (e.per100 >= 90) return { cls: "near", key: "close", text: t("v.keep.close") };
+  return { cls: "bad", key: "offTrack", text: t("v.keep.bad") };
 }
 
 /**
@@ -71,18 +74,22 @@ export function keepUpVerdict(e) {
  */
 export const keepUpRank = (e) => e.per100 ?? (shown(e.yearUne / 1e3, 0) <= 0 ? 100 : -1);
 
+/** @typedef {"better" | "worse" | "same" | "none"} SdgDir  Stable key for the direction (compare this, not the text). */
+
 /**
  * Direction toward the UN 2030 full-employment goal (SDG 8.5, which sets no number):
  * does the ILO expect fewer unemployed next year than this year? Compared in millions with 1 decimal, as displayed.
  * @param {Series} une
  * @param {number} [year]
- * @returns {Verdict}
+ * @returns {Verdict & { dir: SdgDir }}
  */
 export function sdgDirection(une, year = YEAR) {
   const next = une[year + 1];
-  if (next == null) return { cls: "", text: "No projection yet" };
+  /** @param {SdgDir} dir @param {Verdict["cls"]} cls */
+  const v = (dir, cls) => ({ cls, key: /** @type {Verdict["key"]} */ (""), dir, text: t(`v.sdg.${dir}`) });
+  if (next == null) return v("none", "");
   const a = shown(next / 1e6, 1), b = shown(une[year] / 1e6, 1);
-  return a < b ? { cls: "ok", text: "Improving" } : a > b ? { cls: "bad", text: "Getting worse" } : { cls: "", text: "No change" };
+  return a < b ? v("better", "ok") : a > b ? v("worse", "bad") : v("same", "");
 }
 
 /**

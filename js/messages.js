@@ -4,10 +4,14 @@
  * Each returns a clock-core Message (tone, icon, short title, one sentence). Keep them short and free of jargon;
  * numbers and method details belong behind "More".
  */
-import { shown, fmt, pct, message } from "clock-core";
+import { shown, fmt, pct, message, t, addStrings } from "clock-core";
+import en from "./i18n/en.js";
+
+addStrings("en", en);   // the English words; app.js adds the visitor's language on top
 
 /** @typedef {import("clock-core").Message} Message */
 /** @typedef {import("clock-core").Tone} Tone */
+/** @typedef {import("./model.js").SdgDir} SdgDir */
 
 /**
  * The one-line answer at the top: are there enough new jobs for the people joining the workforce?
@@ -17,15 +21,12 @@ import { shown, fmt, pct, message } from "clock-core";
  */
 export function headline(per100, yearUne) {
   if (per100 == null) return shown(yearUne / 1e3, 0) <= 0
-    ? message("ok", "Fewer people out of work", "The workforce is shrinking, and unemployment is falling.")
-    : message("bad", "More people out of work", "The workforce is shrinking, yet unemployment is rising.");
+    ? message("ok", t("msg.head.shrinkDown.t"), t("msg.head.shrinkDown.x"))
+    : message("bad", t("msg.head.shrinkUp.t"), t("msg.head.shrinkUp.x"));
   const n = fmt[0].format(per100);
-  if (per100 >= 100) return message("ok", "Jobs are keeping up",
-    `For every 100 people joining the workforce, there are ${n} new jobs.`);
-  if (per100 >= 90) return message("warn", "Jobs are almost keeping up",
-    `For every 100 people joining the workforce, there are ${n} new jobs. Unemployment edges up.`);
-  return message("bad", "Not enough new jobs",
-    `For every 100 people joining the workforce, there are only ${n} new jobs. Unemployment rises.`);
+  if (per100 >= 100) return message("ok", t("msg.head.ok.t"), t("msg.head.ok.x", { n }));
+  if (per100 >= 90) return message("warn", t("msg.head.close.t"), t("msg.head.close.x", { n }));
+  return message("bad", t("msg.head.bad.t"), t("msg.head.bad.x", { n }));
 }
 
 /**
@@ -36,12 +37,12 @@ export function headline(per100, yearUne) {
  */
 export function keepUpStatus(per100, yearUne) {
   if (per100 == null) return shown(yearUne / 1e3, 0) <= 0
-    ? message("ok", "Unemployment falling", "Fewer people are looking for work than at the start of the year.")
-    : message("bad", "Unemployment rising", "More people are looking for work than at the start of the year.");
-  const text = `${fmt[0].format(per100)} new jobs for every 100 new workers.`;
-  if (per100 >= 100) return message("ok", "Yes, enough", text);
-  if (per100 >= 90) return message("warn", "Almost enough", text);
-  return message("bad", "Not enough", text);
+    ? message("ok", t("msg.keep.shrinkDown.t"), t("msg.keep.shrinkDown.x"))
+    : message("bad", t("msg.keep.shrinkUp.t"), t("msg.keep.shrinkUp.x"));
+  const text = t("msg.keep.text", { n: fmt[0].format(per100) });
+  if (per100 >= 100) return message("ok", t("msg.keep.ok"), text);
+  if (per100 >= 90) return message("warn", t("msg.keep.close"), text);
+  return message("bad", t("msg.keep.bad"), text);
 }
 
 /**
@@ -52,25 +53,26 @@ export function keepUpStatus(per100, yearUne) {
  */
 export function rateStatus(rate, ratePrev) {
   const now = shown(rate, 1), then = shown(ratePrev, 1);
-  const title = `${pct(now)} out of work`;
-  if (now > then) return message("bad", title, `Up from ${pct(then)} last year.`);
-  if (now < then) return message("ok", title, `Down from ${pct(then)} last year.`);
-  return message("warn", title, "The same as last year.");
+  const title = t("msg.rate.title", { pct: pct(now) });
+  if (now > then) return message("bad", title, t("msg.rate.up", { pct: pct(then) }));
+  if (now < then) return message("ok", title, t("msg.rate.down", { pct: pct(then) }));
+  return message("warn", title, t("msg.rate.same"));
 }
 
 /**
  * Traffic light: the UN goal of decent work for all by 2030, as a direction.
- * @param {string} direction   "Improving", "Getting worse", "No change" or "No projection yet"
+ * @param {SdgDir} direction   from sdgDirection: "better", "worse", "same" or "none" (no projection yet)
  * @param {number | null} sinceBasePct  change in unemployed people since the base year, %
  * @param {number} baseYear
  * @returns {Message}
  */
 export function sdgStatus(direction, sinceBasePct, baseYear) {
-  const since = sinceBasePct == null ? "" : ` Unemployment is ${shown(sinceBasePct, 0) <= 0
-    ? `${fmt[0].format(Math.abs(sinceBasePct))}% lower` : `${fmt[0].format(sinceBasePct)}% higher`} than in ${baseYear}.`;
-  if (direction === "Improving") return message("ok", "Getting closer", `Fewer people out of work expected next year.${since}`);
-  if (direction === "Getting worse") return message("bad", "Moving away", `More people out of work expected next year.${since}`);
-  return message("warn", "Standing still", `No clear change expected next year.${since}`);
+  const since = sinceBasePct == null ? "" : " " + (shown(sinceBasePct, 0) <= 0
+    ? t("msg.sdg.lower", { pct: pct(Math.abs(sinceBasePct), 0), year: baseYear })
+    : t("msg.sdg.higher", { pct: pct(sinceBasePct, 0), year: baseYear }));
+  if (direction === "better") return message("ok", t("msg.sdg.better.t"), t("msg.sdg.better.x") + since);
+  if (direction === "worse") return message("bad", t("msg.sdg.worse.t"), t("msg.sdg.worse.x") + since);
+  return message("warn", t("msg.sdg.same.t"), t("msg.sdg.same.x") + since);
 }
 
 /**
@@ -80,8 +82,9 @@ export function sdgStatus(direction, sinceBasePct, baseYear) {
  * @returns {{ tone: Tone, label: string }}
  */
 export function countryBadge(per100, yearUne) {
-  if (per100 == null) return shown(yearUne / 1e3, 0) <= 0 ? { tone: "ok", label: "Fewer jobless" } : { tone: "bad", label: "More jobless" };
-  if (per100 >= 100) return { tone: "ok", label: "Keeping up" };
-  if (per100 >= 90) return { tone: "warn", label: "Almost" };
-  return { tone: "bad", label: "Falling behind" };
+  if (per100 == null) return shown(yearUne / 1e3, 0) <= 0
+    ? { tone: "ok", label: t("msg.badge.shrinkDown") } : { tone: "bad", label: t("msg.badge.shrinkUp") };
+  if (per100 >= 100) return { tone: "ok", label: t("msg.badge.ok") };
+  if (per100 >= 90) return { tone: "warn", label: t("msg.badge.close") };
+  return { tone: "bad", label: t("msg.badge.bad") };
 }

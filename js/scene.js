@@ -40,7 +40,7 @@ export function jobsScene() {
     layout(f) {
       const { w, ground: G } = f;
       const rnd = seeded(5);
-      const maxH = G * (w < 600 ? 0.36 : 0.48);
+      const maxH = G * (w < 600 ? 0.3 : 0.48);   // keep the skyline below the header text (lower on phones)
       farmFrom = w * (w < 600 ? 0.8 : 0.82);
       win = Math.max(2.5, G / 140);
       buildings = [];
@@ -63,9 +63,13 @@ export function jobsScene() {
           x += bw + (near ? 4 + rnd() * 10 : -6);
         }
       }
-      // A crane on the tallest near building in the left half
-      const host = buildings.filter((b) => b.near && b.x < w * 0.45).sort((a, b) => b.h - a.h)[0] ?? buildings[0];
-      crane = { x: host.x + host.w * 0.5, base: G - host.h, top: G - host.h - Math.min(G * 0.16, 60), jib: Math.min(w * 0.12, 90) };
+      // A crane in the left half, on the tallest near building it fits on without rising above the skyline's height
+      // (so it never reaches up behind the header text)
+      const craneH = Math.min(G * 0.16, 60);
+      const left = buildings.filter((b) => b.near && b.x < w * 0.45 && b.w > 20);
+      const host = left.filter((b) => b.h + craneH <= maxH).sort((a, b) => b.h - a.h)[0]
+        ?? left.sort((a, b) => a.h - b.h)[0] ?? buildings[0];
+      crane = { x: host.x + host.w * 0.5, base: G - host.h, top: G - host.h - craneH, jib: Math.min(w * 0.12, 90) };
       // People walking along the street, both ways
       people = Array.from({ length: Math.max(6, Math.round(w / 55)) }, () => ({
         x: rnd() * w, speed: (rnd() < 0.5 ? -1 : 1) * (10 + rnd() * 14), size: Math.max(14, G * 0.055) * (0.85 + rnd() * 0.3), phase: rnd() * 6,

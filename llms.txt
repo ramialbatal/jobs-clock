@@ -7,6 +7,8 @@
 - Countries: China, United States, India, European Union, Russia, Japan, Iran, Indonesia, Saudi Arabia, South Korea, Germany, Canada, Mexico, Brazil, Türkiye, South Africa, Australia, United Kingdom, plus rest of world.
 - For each: net new jobs, unemployed people, unemployment rate, employment, history since 2015, and jobs per 100 new workers with a verdict (Keeping up, Close, Falling behind). Where the workforce is shrinking (for example Japan or the EU), the verdict is instead whether unemployment is falling or rising.
 - The direction of unemployment toward the UN's 2030 goal of full employment (SDG target 8.5).
+- Languages: English, French (?lang=fr), Spanish (?lang=es) and Arabic (?lang=ar).
+- An embeddable widget for other websites: https://ramialbatal.github.io/jobs-clock/?embed=1 (add &lang=fr, es or ar).
 
 ## Data source (fetched live from ILOSTAT)
 - International Labour Organization, ILO modelled estimates: employment, unemployment and the unemployment rate, ages 15+ (CC BY 4.0), including ILO estimates for the current and next year.

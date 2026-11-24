@@ -11,7 +11,7 @@ import { jobsEntry, keepUpVerdict, keepUpRank, sdgDirection, worldSummary, subtr
 import { headline, keepUpStatus, rateStatus, sdgStatus, countryBadge } from "./messages.js";
 import { jobsScene } from "./scene.js";
 
-const { YEAR, fmt, pct, signed, setText, escapeHtml } = C;
+const { YEAR, fmt, pct, signed, setText, escapeHtml, t } = C;
 /** @param {string} id */
 const $ = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
 /** @typedef {import("./model.js").JobsEntry} JobsEntry */
@@ -50,9 +50,9 @@ const loadData = C.once(async () => {
 /** @param {number} n */
 function people(n) {
   const a = Math.abs(n), s = n < 0 ? "-" : "";
-  if (a >= 1e9) return s + fmt[2].format(a / 1e9) + " billion";
-  if (a >= 1e6) return s + fmt[1].format(a / 1e6) + " million";
-  if (a >= 1e3) return s + fmt[0].format(a / 1e3) + " thousand";
+  if (a >= 1e9) return t("a.billion", { n: s + fmt[2].format(a / 1e9) });
+  if (a >= 1e6) return t("a.million", { n: s + fmt[1].format(a / 1e6) });
+  if (a >= 1e3) return t("a.thousand", { n: s + fmt[0].format(a / 1e3) });
   return s + fmt[0].format(a);
 }
 
@@ -67,11 +67,12 @@ function sparkFor(e) {
   const ys = Object.keys(e.rate).map(Number).filter((y) => y <= YEAR).sort((a, b) => a - b);
   const vals = ys.map((y) => e.rate[y]);
   const ch = vals[vals.length - 1] - vals[0];
-  const changeText = signed(ch, fmt[1]) + " pts";
+  const changeText = t("a.pts", { n: signed(ch, fmt[1]) });
+  const first = ys[0], last = ys[ys.length - 1];
   return C.sparkline(ys, vals, {
-    caption: `rate ${ys[0]}-${String(ys[ys.length - 1]).slice(2)}`, change: ch, changeText, good: "down",
-    title: `Unemployment rate, ${ys[0]} to ${ys[ys.length - 1]}. Show yearly values`,
-    label: `${e.name}: unemployment rate ${ys[0]} to ${ys[ys.length - 1]}, ${changeText}`
+    caption: t("a.sparkCaption", { first, last: String(last).slice(2) }), change: ch, changeText, good: "down",
+    title: t("a.sparkTitle", { first, last }),
+    label: t("a.sparkLabel", { name: e.name, first, last, change: changeText })
   });
 }
 
@@ -80,21 +81,21 @@ function historyTable(e) {
   const rows = e.years.slice().reverse().map((y) => {
     const d = e.emp[y - 1] != null ? (e.emp[y] - e.emp[y - 1]) / 1e6 : null;
     return `<tr><th>${y}${y >= YEAR - 1 ? "*" : ""}</th><td>${people(e.emp[y])}</td><td class="${
-      d == null ? "" : cls.upGood(d, 1)}">${d == null ? "" : signed(d, fmt[1]) + " M"}</td><td>${
+      d == null ? "" : cls.upGood(d, 1)}">${d == null ? "" : t("a.mShort", { n: signed(d, fmt[1]) })}</td><td>${
       e.rate[y] != null ? pct(e.rate[y]) : ""}</td></tr>`;
   }).join("");
-  return `<div class="history" hidden><table><caption>Employed · yearly change · unemployment rate (* ILO estimate or projection)</caption>${rows}</table></div>`;
+  return `<div class="history" hidden><table><caption>${t("a.history")}</caption>${rows}</table></div>`;
 }
 
 /** @param {Entry} e */
 function cardGoalHtml(e) {
   const v = keepUpVerdict(e);
   const label = e.per100 == null
-    ? `Workforce shrinking · unemployed ${signed(e.yearUne / 1e3)} k this year`
-    : `${fmt[0].format(Math.min(e.per100, 999))} jobs per 100 new workers`;
-  const bar = e.per100 == null ? "" : `<div class="goal-bar" title="Net new jobs this year as a share of new workers (the marker is 100: enough jobs for all of them)">
-        <i style="width:${Math.min(e.per100, 100)}%"></i><span style="left:100%"></span></div>`;
-  return `<div class="card-goal">${bar}<p><span>${label}</span><span class="verdict ${v.cls}">${v.text}</span></p></div>`;
+    ? t("a.shrinking", { n: signed(e.yearUne / 1e3) })
+    : t("a.per100", { n: fmt[0].format(Math.min(e.per100, 999)) });
+  const bar = e.per100 == null ? "" : `<div class="goal-bar" title="${escapeHtml(t("a.per100Title"))}">
+        <i style="width:${Math.min(e.per100, 100)}%"></i><span style="inset-inline-start:100%"></span></div>`;
+  return `<div class="card-goal">${bar}<p><span>${escapeHtml(label)}</span><span class="verdict ${v.cls}">${escapeHtml(v.text)}</span></p></div>`;
 }
 
 // ---- World goal section ----------------------------------------------------------------
@@ -103,18 +104,18 @@ function renderGoal(world) {
   C.showVerdict($("goal-verdict"), keepUpVerdict(world));
   $("g-newworkers-year").textContent = people(world.newWorkers);
   $("g-jobs-year").textContent = people(world.yearNet);
-  $("g-per100").textContent = world.per100 == null ? "n/a" : fmt[0].format(world.per100);
+  $("g-per100").textContent = world.per100 == null ? t("a.na") : fmt[0].format(world.per100);
   const sum = worldSummary(world, CFG.sdgBaseYear), next = world.une[YEAR + 1];
   C.showVerdict($("sdg-verdict"), sdgDirection(world.une));
   C.fill("sdg-base-year", CFG.sdgBaseYear);
-  $("sdg-base").textContent = sum.sdgBase != null ? people(sum.sdgBase) : "n/a";
+  $("sdg-base").textContent = sum.sdgBase != null ? people(sum.sdgBase) : t("a.na");
   $("sdg-now").textContent = people(world.uneY);
-  $("sdg-change").textContent = sum.sdgChangePct != null ? signed(sum.sdgChangePct) + "%" : "n/a";
+  $("sdg-change").textContent = sum.sdgChangePct != null ? signed(sum.sdgChangePct) + "%" : t("a.na");
   $("sdg-next-clause").hidden = next == null;   // no "the ILO expects n/a" before a new projection is out
   if (next != null) $("sdg-next").textContent = people(next);
-  /** @param {number} t */
-  return (t) => {
-    const jobs = world.jobsAt(t), workers = world.workersAt(t);
+  /** @param {number} ty  time in fractional years */
+  return (ty) => {
+    const jobs = world.jobsAt(ty), workers = world.workersAt(ty);
     setText($("g-jobs"), fmt[0].format(jobs));
     setText($("g-workers"), fmt[0].format(workers));
     $("g-bar").style.width = Math.max(0, Math.min(jobs / workers, 1)) * 100 + "%";
@@ -132,11 +133,11 @@ function render(data) {
   /** @type {Entry[]} */
   const entries = CFG.countries
     .filter((c) => data.employed[c.code] && data.unemployed[c.code])
-    .map((c) => ({ ...c, ...jobsEntry(data.employed[c.code], data.unemployed[c.code], data.rate[c.code] || {}) }));
+    .map((c) => ({ ...c, name: C.regionName(C.flagRegion(c.flag), c.name), ...jobsEntry(data.employed[c.code], data.unemployed[c.code], data.rate[c.code] || {}) }));
   const top = entries.filter((e) => !e.partOf);
   const rEmp = subtractSeries(data.employed[W], top.map((e) => e.emp));
   const rUne = subtractSeries(data.unemployed[W], top.map((e) => e.une));
-  entries.push({ code: "ROW", flag: "🌐", name: "Rest of world", rest: true, ...jobsEntry(rEmp, rUne, rateFromLevels(rEmp, rUne)) });
+  entries.push({ code: "ROW", flag: "🌐", name: t("a.rest"), rest: true, ...jobsEntry(rEmp, rUne, rateFromLevels(rEmp, rUne)) });
 
   // Header fill-ins
   const sum = worldSummary(world, CFG.sdgBaseYear);
@@ -148,7 +149,7 @@ function render(data) {
   $("w-emp-prev").textContent = people(world.emp[YEAR - 1]);
   $("w-rate").textContent = pct(world.rateY);
   $("w-rate-prev").textContent = pct(world.ratePrev);
-  $("w-years").textContent = sum.yearsToEmployAll != null ? fmt[1].format(sum.yearsToEmployAll) : "n/a";
+  $("w-years").textContent = sum.yearsToEmployAll != null ? fmt[1].format(sum.yearsToEmployAll) : t("a.na");
   $("w-une-year").textContent = people(world.uneY);
   $("w-net-year").textContent = people(world.yearNet);
   const goalTick = renderGoal(world);
@@ -156,11 +157,11 @@ function render(data) {
   // The answer and the traffic lights
   C.showAnswer(headline(world.per100, world.yearUne));
   $("status-cards").innerHTML = [
-    C.statusCard({ label: "Enough new jobs for new workers?", msg: keepUpStatus(world.per100, world.yearUne),
-      pct: world.per100, barLabel: world.per100 == null ? "" : `${fmt[0].format(world.per100)} jobs per 100 new workers` }),
-    C.statusCard({ label: "Unemployment", msg: rateStatus(world.rateY, world.ratePrev) }),
-    C.statusCard({ label: "UN goal: decent work for all by 2030",
-      msg: sdgStatus(sdgDirection(world.une).text, sum.sdgChangePct, CFG.sdgBaseYear) })
+    C.statusCard({ label: t("a.card.keepUp"), msg: keepUpStatus(world.per100, world.yearUne),
+      pct: world.per100, barLabel: world.per100 == null ? "" : t("a.per100", { n: fmt[0].format(world.per100) }) }),
+    C.statusCard({ label: t("a.card.rate"), msg: rateStatus(world.rateY, world.ratePrev) }),
+    C.statusCard({ label: t("a.card.sdg"),
+      msg: sdgStatus(sdgDirection(world.une).dir, sum.sdgChangePct, CFG.sdgBaseYear) })
   ].join("");
 
   // The rate bar is scaled to the highest rate shown, and says so.
@@ -175,24 +176,24 @@ function render(data) {
       <header>
         <span class="flag" aria-hidden="true">${e.flag}</span>
         <h3>${escapeHtml(e.name)}</h3>
-        ${e.partOf ? `<span class="tag">part of ${escapeHtml(e.partOf)}</span>` : ""}
+        ${e.partOf ? `<span class="tag">${escapeHtml(t("a.partOf", { name: C.regionName(e.partOf, e.partOf) }))}</span>` : ""}
         ${C.badge(badge.tone, badge.label)}
       </header>
-      <div class="ytd"><span class="num">0</span> <small class="num-label">net jobs added in ${YEAR}</small></div>
-      <p class="unemp-line"><span class="une">0</span> <small>looking for work now (${pct(e.rateY)})</small></p>
+      <div class="ytd"><span class="num">0</span> <small class="num-label">${t("a.jobsAdded", { year: YEAR })}</small></div>
+      <p class="unemp-line"><span class="une">0</span> <small>${t("a.looking", { pct: pct(e.rateY) })}</small></p>
       <details class="more-info">
-        <summary>More</summary>
+        <summary>${t("a.more")}</summary>
         ${e.rest ? "" : sparkFor(e)}
-        <div class="bar" title="Unemployment rate ${pct(e.rateY)} (a full bar is the highest rate shown, ${pct(maxRate)})"><i class="u" style="width:${(e.rateY / maxRate) * 100}%"></i></div>
+        <div class="bar" title="${escapeHtml(t("a.rateTitle", { pct: pct(e.rateY), max: pct(maxRate) }))}"><i class="u" style="width:${(e.rateY / maxRate) * 100}%"></i></div>
         <dl>
-          <div><dt>Unemployment rate ${YEAR}</dt><dd class="${cls.upBad(C.shown(e.rateY, 1) - C.shown(e.ratePrev, 1), 1)}">${pct(e.rateY)} <small>(${pct(e.ratePrev)})</small></dd></div>
-          <div><dt>Employed ${YEAR}</dt><dd>${people(e.empY)}</dd></div>
-          <div><dt>Net new jobs, all of ${YEAR}</dt><dd class="${cls.upGood(e.yearNet / 1e6, 2)}">${signed(e.yearNet / 1e6, fmt[2])} M</dd></div>
-          <div><dt>Unemployed, change in ${YEAR}</dt><dd class="${cls.upBad(e.yearUne / 1e3, 0)}">${signed(e.yearUne / 1e3)} k</dd></div>
-          <div class="wide"><dt>Net jobs since you opened this page</dt><dd class="since">0</dd></div>
+          <div><dt>${t("a.dl.rate", { year: YEAR })}</dt><dd class="${cls.upBad(C.shown(e.rateY, 1) - C.shown(e.ratePrev, 1), 1)}">${pct(e.rateY)} <small>(${pct(e.ratePrev)})</small></dd></div>
+          <div><dt>${t("a.dl.emp", { year: YEAR })}</dt><dd>${people(e.empY)}</dd></div>
+          <div><dt>${t("a.dl.net", { year: YEAR })}</dt><dd class="${cls.upGood(e.yearNet / 1e6, 2)}">${t("a.mShort", { n: signed(e.yearNet / 1e6, fmt[2]) })}</dd></div>
+          <div><dt>${t("a.dl.une", { year: YEAR })}</dt><dd class="${cls.upBad(e.yearUne / 1e3, 0)}">${t("a.kShort", { n: signed(e.yearUne / 1e3) })}</dd></div>
+          <div class="wide"><dt>${t("a.dl.since")}</dt><dd class="since">0</dd></div>
         </dl>
         ${cardGoalHtml(e)}
-        ${e.rest ? "" : `<button type="button" class="more" aria-expanded="false">Yearly data <span aria-hidden="true">▾</span></button>${historyTable(e)}`}
+        ${e.rest ? "" : `<button type="button" class="more" aria-expanded="false">${t("core.yearly")} <span aria-hidden="true">▾</span></button>${historyTable(e)}`}
       </details>`;
     C.wireHistory(el);
     grid.appendChild(el);
@@ -220,25 +221,25 @@ function render(data) {
   const openedJobs = new Map(cards.map((c) => [c, c.e.jobsAt(opened)]));
   const worldOpened = world.jobsAt(opened);
   C.startTicker((now) => {
-    const t = C.tYears(now);
-    const jobs = world.jobsAt(t);
+    const ty = C.tYears(now);
+    const jobs = world.jobsAt(ty);
     setText($("w-jobs"), (C.shownSign(jobs) < 0 ? "-" : "") + C.digits(fmt[0].format(Math.abs(jobs))), true);
-    setText($("w-une"), C.digits(fmt[0].format(world.unemployedAt(t))), true);
-    setText($("w-jobs-sec"), fmt[2].format(world.jobsPerSecAt(t)));
+    setText($("w-une"), C.digits(fmt[0].format(world.unemployedAt(ty))), true);
+    setText($("w-jobs-sec"), fmt[2].format(world.jobsPerSecAt(ty)));
     setText($("w-jobs-since"), signed(jobs - worldOpened));
-    setText($("w-une-since"), signed(world.unemployedAt(t) - world.u0));
+    setText($("w-une-since"), signed(world.unemployedAt(ty) - world.u0));
     const share = world.yearNet > 0 ? Math.max(0, Math.min(jobs / world.yearNet, 1)) : 0;   // share of the year's net jobs so far
     setText($("w-pct"), fmt[2].format(share * 100));
     $("w-bar").style.width = share * 100 + "%";
     for (const c of cards) {
-      const j = c.e.jobsAt(t), lost = C.shownSign(j) < 0;   // "added" or "lost" follows the live number
+      const j = c.e.jobsAt(ty), lost = C.shownSign(j) < 0;   // "added" or "lost" follows the live number
       c.ytd.classList.toggle("neg", lost);
-      setText(c.label, `net jobs ${lost ? "lost" : "added"} in ${YEAR}`);
+      setText(c.label, t(lost ? "a.jobsLost" : "a.jobsAdded", { year: YEAR }));
       setText(c.num, fmt[0].format(Math.abs(j)));
-      setText(c.une, fmt[0].format(c.e.unemployedAt(t)));
+      setText(c.une, fmt[0].format(c.e.unemployedAt(ty)));
       setText(c.since, signed(j - (openedJobs.get(c) ?? 0)));
     }
-    goalTick(t);
+    goalTick(ty);
   });
 }
 
@@ -247,7 +248,7 @@ async function show() {
   try {
     const { data, fetchedAt } = await loadData();
     render(data);
-    $("fetched-at").textContent = fetchedAt.toLocaleString();
+    $("fetched-at").textContent = fetchedAt.toLocaleString(C.locale());
     C.setState("ready");
   } catch (err) {
     console.error(err);
@@ -256,6 +257,9 @@ async function show() {
   }
 }
 
+// Language first (the inline script in index.html chose it), so everything below is drawn in it.
+await C.startLanguage((code) => import(`./i18n/${code}.js`), document.querySelector("header.top .wrap"));
+C.wireEmbed(document.querySelector("footer.foot"));
 C.startScene(document.querySelector("canvas.scene"), jobsScene(), { groundAt: document.querySelector("header.top") });
 C.wireHelp();
 C.fill("year", YEAR);
