@@ -73,7 +73,7 @@ export const keepUpRank = (e) => e.per100 ?? (shown(e.yearUne / 1e3, 0) <= 0 ? 1
 
 /**
  * Direction toward the UN 2030 full-employment goal (SDG 8.5, which sets no number):
- * does the ILO expect fewer unemployed next year than this year?
+ * does the ILO expect fewer unemployed next year than this year? Compared in millions with 1 decimal, as displayed.
  * @param {Series} une
  * @param {number} [year]
  * @returns {Verdict}
@@ -81,7 +81,8 @@ export const keepUpRank = (e) => e.per100 ?? (shown(e.yearUne / 1e3, 0) <= 0 ? 1
 export function sdgDirection(une, year = YEAR) {
   const next = une[year + 1];
   if (next == null) return { cls: "", text: "No projection yet" };
-  return next < une[year] ? { cls: "ok", text: "Improving" } : { cls: "bad", text: "Getting worse" };
+  const a = shown(next / 1e6, 1), b = shown(une[year] / 1e6, 1);
+  return a < b ? { cls: "ok", text: "Improving" } : a > b ? { cls: "bad", text: "Getting worse" } : { cls: "", text: "No change" };
 }
 
 /**
