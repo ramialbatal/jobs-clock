@@ -150,4 +150,12 @@ export default {
   "a.card.keepUp": "Assez de nouveaux emplois pour les nouveaux travailleurs ?",
   "a.card.rate": "Chômage",
   "a.card.sdg": "Objectif de l’ONU : un travail décent pour tous d’ici 2030",
+
+  // "What can I do?" (js/actions.js)
+  "act.learn.t": "Continuer d’apprendre",
+  "act.learn.x": "Des formations gratuites aux compétences numériques et pratiques ouvrent de nouvelles portes. Les employeurs s’attendent à ce qu’environ 39 % des compétences actuelles changent d’ici 2030.",
+  "act.local.t": "Soutenir les petites entreprises",
+  "act.local.x": "Achetez local et recommandez les personnes en qui vous avez confiance. Les petites entreprises et les indépendants fournissent environ 70 % des emplois dans les pays étudiés par l’OIT.",
+  "act.youth.t": "Demander un vrai départ pour les jeunes",
+  "act.youth.x": "Demandez à vos élus des formations, de l’apprentissage et de l’aide pour un premier emploi : environ un jeune sur cinq n’est ni en emploi, ni en études, ni en formation.",
 };

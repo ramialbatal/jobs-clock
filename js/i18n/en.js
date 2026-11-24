@@ -89,4 +89,12 @@ export default {
   "a.card.keepUp": "Enough new jobs for new workers?",
   "a.card.rate": "Unemployment",
   "a.card.sdg": "UN goal: decent work for all by 2030",
+
+  // "What can I do?" (js/actions.js)
+  "act.learn.t": "Keep learning",
+  "act.learn.x": "Free courses in digital and practical skills open new doors. Employers expect about 39% of today's job skills to change by 2030.",
+  "act.local.t": "Back small businesses",
+  "act.local.x": "Buy local and recommend people you trust. Small firms and the self-employed provide about 70% of jobs in the countries studied by the ILO.",
+  "act.youth.t": "Ask for a fair start",
+  "act.youth.x": "Ask leaders for training, apprenticeships and help into first jobs: about one young person in five is not in work, education or training.",
 };

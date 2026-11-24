@@ -150,4 +150,12 @@ export default {
   "a.card.keepUp": "¿Hay empleos para los nuevos trabajadores?",
   "a.card.rate": "Desempleo",
   "a.card.sdg": "Meta de la ONU: trabajo decente para todos en 2030",
+
+  // "What can I do?" (js/actions.js)
+  "act.learn.t": "Sigue aprendiendo",
+  "act.learn.x": "Los cursos gratuitos de habilidades digitales y prácticas abren nuevas puertas. Las empresas esperan que cerca del 39% de las habilidades laborales actuales cambien de aquí a 2030.",
+  "act.local.t": "Apoya a los pequeños negocios",
+  "act.local.x": "Compra en tu barrio y recomienda a personas de confianza. Las pequeñas empresas y los trabajadores por cuenta propia dan cerca del 70% del empleo en los países estudiados por la OIT.",
+  "act.youth.t": "Pide un buen comienzo para los jóvenes",
+  "act.youth.x": "Pide a tus representantes formación, prácticas y ayuda para el primer empleo: cerca de uno de cada cinco jóvenes no trabaja, ni estudia, ni se forma.",
 };
