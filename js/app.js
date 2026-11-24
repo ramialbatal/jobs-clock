@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * Jobs Clock: loads ILO data, renders the page and runs the live counters.
- * Calculations live in model.js (pure, tested); settings in config.js.
+ * Calculations live in model.js (pure, tested); settings in config.js; the picture behind the header in scene.js.
  *
  * Sections: Data · Rendering helpers · World goal section · Page (render) · Boot.
  */
@@ -9,6 +9,7 @@ import * as C from "clock-core";
 import CFG from "./config.js";
 import { jobsEntry, keepUpVerdict, keepUpRank, sdgDirection, worldSummary, subtractSeries, rateFromLevels } from "./model.js";
 import { headline, keepUpStatus, rateStatus, sdgStatus, countryBadge } from "./messages.js";
+import { jobsScene } from "./scene.js";
 
 const { YEAR, fmt, pct, signed, setText, escapeHtml } = C;
 /** @param {string} id */
@@ -255,6 +256,7 @@ async function show() {
   }
 }
 
+C.startScene(document.querySelector("canvas.scene"), jobsScene(), { groundAt: document.querySelector("header.top") });
 C.wireHelp();
 C.fill("year", YEAR);
 C.fill("source", CFG.source);
