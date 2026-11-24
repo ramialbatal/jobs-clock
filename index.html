@@ -40,10 +40,10 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ramialbatal/clock-core@93c45766563da0e192a80fd2067d771f4a1ee88b/clock-core.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ramialbatal/clock-core@ec72aeee0db58f067da1658b766a21a229a991f1/clock-core.css">
   <link rel="stylesheet" href="css/theme.css">
   <!-- clock-core is pinned to an exact commit; to upgrade, change it here, in the CSS link above and in package.json -->
-  <script type="importmap">{ "imports": { "clock-core": "https://cdn.jsdelivr.net/gh/ramialbatal/clock-core@93c45766563da0e192a80fd2067d771f4a1ee88b/clock-core.js" } }</script>
+  <script type="importmap">{ "imports": { "clock-core": "https://cdn.jsdelivr.net/gh/ramialbatal/clock-core@ec72aeee0db58f067da1658b766a21a229a991f1/clock-core.js" } }</script>
   <!-- If the page code can't load (CDN down, very old browser), show the error box instead of a spinner forever -->
   <script>
     function clockLoadFailed() {
@@ -64,7 +64,7 @@
   <header class="top">
     <div class="wrap">
       <h1>Jobs Clock</h1>
-      <p class="sub">Net new jobs vs people looking for work in <span data-year></span>, estimated live, second by second</p>
+      <p class="sub">How many jobs the world is adding, live, and whether it is enough</p>
       <div class="gas-bar">
         <button type="button" class="help-btn" data-open-help aria-haspopup="dialog">
           <span aria-hidden="true">?</span><span class="sr-only">What do these numbers mean?</span>
@@ -94,41 +94,50 @@
   </div>
 
   <main class="wrap ready-only">
+    <!-- 1. The answer, in one line -->
+    <section class="answer" id="answer" data-tone="warn" aria-live="polite">
+      <p class="answer-icon" id="answer-icon" aria-hidden="true"></p>
+      <h2 class="answer-title" id="answer-title"></h2>
+      <p class="answer-text" id="answer-text"></p>
+    </section>
+
+    <!-- 2. The live counters -->
     <div class="duo">
-      <section class="hero" aria-label="World net new jobs">
-        <p class="label">🌍 World · net new jobs · <span data-year></span></p>
+      <section class="hero" aria-label="New jobs this year">
+        <p class="label">New jobs in the world so far in <span data-year></span></p>
         <div class="big mid" id="w-jobs">0</div>
         <p class="unit">more people in work than on 1 January</p>
-        <div class="progress" aria-hidden="true"><i id="w-bar"></i></div>
-        <ul class="stats">
-          <li><b id="w-jobs-sec">0</b><span>net new jobs per second right now</span></li>
-          <li><b id="w-jobs-since">0</b><span>since you opened this page</span></li>
-          <li><b><i id="w-pct">0</i>%</b><span>of the <span id="w-yearnet"></span> net new jobs expected in <span data-year></span></span></li>
-        </ul>
-        <p class="basis">The ILO estimates <b id="w-emp"></b> people in work in <span data-year></span>,
-          up from <b id="w-emp-prev"></b> in <span data-prev></span>.</p>
+        <p class="since"><b id="w-jobs-since">0</b> since you opened this page</p>
       </section>
-
-      <section class="hero unemp" aria-label="World unemployed">
-        <p class="label">🌍 World · unemployed · right now</p>
+      <section class="hero unemp" aria-label="People looking for work">
+        <p class="label">People looking for work right now</p>
         <div class="big mid" id="w-une">0</div>
-        <p class="unit">people without a job and looking for one</p>
-        <ul class="stats">
-          <li><b id="w-rate">0</b><span>unemployment rate</span></li>
-          <li><b id="w-une-since">0</b><span>change since 1 January</span></li>
-        </ul>
-        <p class="basis">The rate was <b id="w-rate-prev"></b> in <span data-prev></span>. Many more people
-          want work but aren't counted here: see <button type="button" class="link-btn" data-open-help>what the numbers mean</button>.</p>
+        <p class="unit"><b id="w-rate">0</b> of the workforce</p>
+        <p class="since"><b id="w-une-since">0</b> since 1 January</p>
       </section>
     </div>
+    <details class="more-info hero-more">
+      <summary>More about these numbers</summary>
+      <div class="progress" aria-hidden="true"><i id="w-bar"></i></div>
+      <p>So far <b><i id="w-pct">0</i>%</b> of the <b id="w-yearnet"></b> new jobs expected in <span data-year></span>, about
+        <b id="w-jobs-sec">0</b> a second right now. The ILO estimates <b id="w-emp"></b> people in work in <span data-year></span>,
+        up from <b id="w-emp-prev"></b> in <span data-prev></span>; the unemployment rate was <b id="w-rate-prev"></b> in
+        <span data-prev></span>.</p>
+      <p>This year the world adds about <b id="w-net-year"></b> net new jobs, while <b id="w-une-year"></b> people are
+        unemployed. At this pace it would take about <b id="w-years"></b> years of job growth to employ them all, even if
+        nobody new joined the workforce. Many more people want work but aren't counted as unemployed:
+        <button type="button" class="link-btn" data-open-help>what the numbers mean</button>.</p>
+    </details>
 
-    <p class="versus">This year the world adds about <b id="w-net-year"></b> net new jobs, while <b id="w-une-year"></b>
-      people are unemployed. At this pace it would take about <b id="w-years"></b> years of job growth to employ them all,
-      even if nobody new joined the workforce.</p>
-
-    <section class="goal" aria-labelledby="goal-title">
+    <!-- 3. Where we stand: a few traffic lights -->
+    <section class="standing" aria-labelledby="standing-title">
+      <h2 id="standing-title">Where we stand</h2>
+      <div class="status-grid" id="status-cards"></div>
+      <details class="more-info">
+        <summary>What do these mean?</summary>
+    <div class="goal">
       <div class="goal-head">
-        <h2 id="goal-title">Are jobs keeping up?</h2>
+        <h3>Are jobs keeping up?</h3>
         <span id="goal-verdict" class="verdict">…</span>
       </div>
       <p>Every year millions of young people reach working age and start looking for work. Unemployment only falls when the
@@ -153,26 +162,32 @@
       <p class="src">Data: ILO modelled estimates. New workers = growth in the labour force (employed plus unemployed).
         The ILO's wider "jobs gap", which includes people who want work but have stopped looking, is more than twice
         the number of unemployed.</p>
+    </div>
+      </details>
     </section>
 
-    <section aria-label="Countries">
+    <!-- 4. Countries -->
+    <section aria-labelledby="countries-title">
       <div class="bar-head">
-        <h2>Major economies</h2>
+        <h2 id="countries-title">Country by country</h2>
         <label>Sort by
           <select id="sort">
-            <option value="jobs">Net new jobs</option>
-            <option value="keepup">Keeping up with new workers</option>
-            <option value="rate">Unemployment rate</option>
-            <option value="unemployed">Unemployed people</option>
+            <option value="jobs">Most new jobs</option>
+            <option value="keepup">Best at keeping up</option>
+            <option value="rate">Highest unemployment</option>
+            <option value="unemployed">Most people out of work</option>
             <option value="name">Name</option>
           </select>
         </label>
       </div>
-      <div class="grid" id="grid"></div>
+      <p class="legend"><span class="badge ok">Keeping up</span> enough new jobs · <span class="badge bad">Falling behind</span> not enough</p>
+      <div class="grid collapsed" id="grid"></div>
+      <p class="show-all-row"><button type="button" class="show-all" id="show-all" hidden>Show all countries</button></p>
     </section>
 
-    <section class="method">
-      <h2>How this is calculated</h2>
+    <!-- 5. All the detail, for those who want it -->
+    <details class="method">
+      <summary><h2>How we calculate this</h2></summary>
       <p>The International Labour Organization (ILO) publishes yearly averages of how many people are employed and
         unemployed in every country, built so that countries can be compared. Its latest edition already includes its
         own estimates for <span data-year></span> and <span data-next></span>, so this page does not project the data itself.</p>
@@ -191,7 +206,7 @@ unemployed(now) = line through the yearly averages at mid-year</pre>
         employment, its yearly change and the rate for each year. Years marked * are ILO estimates or projections.</p>
       <p class="src">Data: <span data-source></span> (people aged 15 and over), fetched live from
         <a href="https://ilostat.ilo.org/data/" rel="noopener">ILOSTAT</a> at <span id="fetched-at"></span>.</p>
-    </section>
+    </details>
   </main>
 
   <dialog id="help" aria-labelledby="help-title">
