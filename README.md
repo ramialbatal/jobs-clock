@@ -7,6 +7,13 @@
 A static, real-time clock of **net new jobs** so far this year, next to the number of **unemployed people**, for the world and major economies.
 It is part of the same series as the [Emissions Clock](https://ramialbatal.github.io/emissions-clock/) and the [Renewables Clock](https://ramialbatal.github.io/renewables-clock/).
 
+**Languages:** English, French, Spanish and Arabic. The globe at the top switches language; `?lang=fr`, `?lang=es` or
+`?lang=ar` opens one directly. Translations live in `js/i18n/`; corrections from native speakers are very welcome.
+
+**On your own website:** the "Put this clock on your website" button at the bottom gives a one-line code for a small
+live widget (the answer and the jobs counter), in the language you have open. The widget is the same page with
+`?embed=1`.
+
 ## Data
 
 On load, the page fetches three series from the [ILOSTAT API](https://ilostat.ilo.org/data/) (it allows cross-origin requests):

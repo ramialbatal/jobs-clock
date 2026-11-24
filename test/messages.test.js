@@ -27,11 +27,11 @@ test("rateStatus compares the rate as displayed with last year", () => {
 });
 
 test("sdgStatus: direction plus the change since the base year", () => {
-  const m = sdgStatus("Getting worse", -8.3, 2015);
+  const m = sdgStatus("worse", -8.3, 2015);
   assert.deepEqual([m.tone, m.title], ["bad", "Moving away"]);
   assert.equal(m.text, "More people out of work expected next year. Unemployment is 8% lower than in 2015.");
-  assert.equal(sdgStatus("Improving", 3, 2015).text, "Fewer people out of work expected next year. Unemployment is 3% higher than in 2015.");
-  assert.equal(sdgStatus("No projection yet", null, 2015).title, "Standing still");
+  assert.equal(sdgStatus("better", 3, 2015).text, "Fewer people out of work expected next year. Unemployment is 3% higher than in 2015.");
+  assert.equal(sdgStatus("none", null, 2015).title, "Standing still");
 });
 
 test("countryBadge", () => {

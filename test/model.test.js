@@ -51,6 +51,8 @@ test("keepUpVerdict: thresholds on jobs per 100 as displayed, and the shrinking-
   assert.equal(keepUpVerdict({ per100: null, yearUne: -100e3 }).text, "Unemployment falling");
   assert.equal(keepUpVerdict({ per100: null, yearUne: 100e3 }).text, "Unemployment rising");
   assert.equal(keepUpVerdict({ per100: null, yearUne: 300 }).text, "Unemployment falling");   // shown as 0 k
+  assert.deepEqual([100, 97, 60].map((per100) => keepUpVerdict({ per100, yearUne: 1 }).key), ["onTrack", "close", "offTrack"]);
+  assert.equal(keepUpVerdict({ per100: null, yearUne: 100e3 }).key, "backwards");
   const shrinking = jobsEntry({ 2025: 100, 2026: 99, 2027: 98 }, { 2025: 10, 2026: 9.8, 2027: 9.6 }, {}, 2026);
   assert.equal(shrinking.keepUp, null);
   assert.equal(shrinking.per100, null);
@@ -63,10 +65,12 @@ test("keepUpRank places shrinking workforces with keeping up (falling unemployme
 });
 
 test("sdgDirection compares next year's ILO estimate with this year, in millions as displayed", () => {
+  assert.equal(sdgDirection(une, 2026).dir, "worse");
   assert.equal(sdgDirection(une, 2026).text, "Getting worse");
+  assert.equal(sdgDirection({ 2026: 10e6, 2027: 9e6 }, 2026).dir, "better");
   assert.equal(sdgDirection({ 2026: 10e6, 2027: 9e6 }, 2026).text, "Improving");
-  assert.equal(sdgDirection({ 2026: 185.81e6, 2027: 185.79e6 }, 2026).text, "No change");   // both shown as 185.8 million
-  assert.deepEqual(sdgDirection({ 2026: 10 }, 2026), { cls: "", text: "No projection yet" });
+  assert.equal(sdgDirection({ 2026: 185.81e6, 2027: 185.79e6 }, 2026).dir, "same");   // both shown as 185.8 million
+  assert.deepEqual(sdgDirection({ 2026: 10 }, 2026), { cls: "", key: "", dir: "none", text: "No projection yet" });
 });
 
 test("worldSummary: years to employ everyone and change since the SDG base year", () => {
