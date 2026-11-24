@@ -14,7 +14,7 @@
  * @typedef {{ code: string, flag: string, name: string, partOf?: string }} Country
  * @typedef {{
  *   apiBase: string, indicators: { employed: string, unemployed: string, rate: string },
- *   source: string, sourceUrl: string, historyFrom: number, world: string, countries: Country[]
+ *   source: string, historyFrom: number, sdgBaseYear: number, world: string, countries: Country[]
  * }} Config
  */
 
@@ -27,8 +27,8 @@ export default {
     rate: "UNE_2EAP_SEX_AGE_RT_A"         // unemployment rate, %
   },
   source: "International Labour Organization, ILO modelled estimates",
-  sourceUrl: "https://ilostat.ilo.org/data/",
-  historyFrom: 2015,
+  historyFrom: 2015,   // first year fetched
+  sdgBaseYear: 2015,   // the UN Sustainable Development Goals were adopted in 2015 (baseline for the SDG check)
   world: "X01",
   // Same countries as the Emissions and Renewables clocks, so the pages can be compared.
   countries: [

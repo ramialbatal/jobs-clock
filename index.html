@@ -42,9 +42,23 @@
   </script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ramialbatal/clock-core@7f64264169149b91d119f75504cf419cf42475c2/clock-core.css">
   <link rel="stylesheet" href="css/theme.css">
-  <!-- clock-core is pinned to an exact commit (release V1.0.0); to upgrade, change the version here and in the CSS link above -->
+  <!-- clock-core is pinned to an exact commit; to upgrade, change it here, in the CSS link above and in package.json -->
   <script type="importmap">{ "imports": { "clock-core": "https://cdn.jsdelivr.net/gh/ramialbatal/clock-core@7f64264169149b91d119f75504cf419cf42475c2/clock-core.js" } }</script>
-  <script type="module" src="js/app.js"></script>
+  <!-- If the page code can't load (CDN down, very old browser), show the error box instead of a spinner forever -->
+  <script>
+    function clockLoadFailed() {
+      var show = function () {
+        document.body.dataset.state = "error";
+        var m = document.getElementById("error-msg");
+        if (m) m.textContent = "The page code could not load. Please check your connection, update your browser, or try again later.";
+        var r = document.getElementById("retry");
+        if (r) r.onclick = function () { location.reload(); };
+      };
+      if (document.body) show(); else document.addEventListener("DOMContentLoaded", show);
+    }
+  </script>
+  <script nomodule>clockLoadFailed();</script>
+  <script type="module" src="js/app.js" onerror="clockLoadFailed()"></script>
 </head>
 <body data-state="loading">
   <header class="top">
@@ -87,9 +101,9 @@
         <p class="unit">more people in work than on 1 January</p>
         <div class="progress" aria-hidden="true"><i id="w-bar"></i></div>
         <ul class="stats">
-          <li><b id="w-jobs-sec">0</b><span>net new jobs per second</span></li>
+          <li><b id="w-jobs-sec">0</b><span>net new jobs per second right now</span></li>
           <li><b id="w-jobs-since">0</b><span>since you opened this page</span></li>
-          <li><b><i id="w-pct">0</i>%</b><span>of <span data-year></span>'s <span id="w-yearnet"></span></span></li>
+          <li><b><i id="w-pct">0</i>%</b><span>of the <span id="w-yearnet"></span> net new jobs expected in <span data-year></span></span></li>
         </ul>
         <p class="basis">The ILO estimates <b id="w-emp"></b> people in work in <span data-year></span>,
           up from <b id="w-emp-prev"></b> in <span data-prev></span>.</p>
@@ -130,9 +144,9 @@
 
       <div class="goal-row sdg">
         <div class="goal-head"><h3>UN goal: full employment by 2030</h3><span id="sdg-verdict" class="verdict">…</span></div>
-        <p class="goal-note">When the UN set its Sustainable Development Goals in <span data-first></span>, <b id="sdg-base"></b>
-          people were unemployed. In <span data-year></span> it is <b id="sdg-now"></b> (<b id="sdg-change"></b>), and the ILO
-          expects <b id="sdg-next"></b> in <span data-next></span>. The goal (target 8.5) sets no number, so this shows the
+        <p class="goal-note">When the UN set its Sustainable Development Goals in <span data-sdg-base-year></span>, <b id="sdg-base"></b>
+          people were unemployed. In <span data-year></span> it is <b id="sdg-now"></b> (<b id="sdg-change"></b>)<span id="sdg-next-clause">, and the ILO
+          expects <b id="sdg-next"></b> in <span data-next></span></span>. The goal (target 8.5) sets no number, so this shows the
           direction rather than a distance.</p>
       </div>
       <p class="src">Data: ILO modelled estimates. New workers = growth in the labour force (employed plus unemployed).
