@@ -110,7 +110,7 @@ function renderGoal(world) {
   C.fill("sdg-base-year", CFG.sdgBaseYear);
   $("sdg-base").textContent = sum.sdgBase != null ? people(sum.sdgBase) : t("a.na");
   $("sdg-now").textContent = people(world.uneY);
-  $("sdg-change").textContent = sum.sdgChangePct != null ? signed(sum.sdgChangePct) + "%" : t("a.na");
+  $("sdg-change").textContent = sum.sdgChangePct != null ? C.signedPct(sum.sdgChangePct, 0) : t("a.na");
   $("sdg-next-clause").hidden = next == null;   // no "the ILO expects n/a" before a new projection is out
   if (next != null) $("sdg-next").textContent = people(next);
   /** @param {number} ty  time in fractional years */
