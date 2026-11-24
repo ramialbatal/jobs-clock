@@ -1,0 +1,18 @@
+# Jobs Clock
+
+> A live, browser-based clock of net new jobs added so far this year and the number of people unemployed right now, for the world and major economies, and whether job growth keeps up with the growing workforce. URL: https://ramialbatal.github.io/jobs-clock/
+
+## What it shows
+- World net new jobs this year and people unemployed right now, both ticking every second.
+- Countries: China, United States, India, European Union, Russia, Japan, Iran, Indonesia, Saudi Arabia, South Korea, Germany, Canada, Mexico, Brazil, Türkiye, South Africa, Australia, United Kingdom, plus rest of world.
+- For each: net new jobs, unemployed people, unemployment rate, employment, history since 2015, and jobs per 100 new workers with a verdict (Keeping up, Close, Falling behind).
+- The direction of unemployment toward the UN's 2030 goal of full employment (SDG target 8.5).
+
+## Data source (fetched live from ILOSTAT)
+- International Labour Organization, ILO modelled estimates: employment, unemployment and the unemployment rate, ages 15+ (CC BY 4.0), including ILO estimates for the current and next year.
+
+## Method
+Yearly averages are placed at mid-year and joined with straight lines; net new jobs so far = employment now minus employment on 1 January. "Net" means jobs gained minus jobs lost. The live counters are a model, not a real-time measurement.
+
+## Source code
+https://github.com/ramialbatal/jobs-clock (MIT licence)
