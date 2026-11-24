@@ -62,9 +62,10 @@ test("keepUpRank places shrinking workforces with keeping up (falling unemployme
   assert.equal(keepUpRank({ per100: null, yearUne: 1e6 }), -1);
 });
 
-test("sdgDirection compares next year's ILO estimate with this year", () => {
+test("sdgDirection compares next year's ILO estimate with this year, in millions as displayed", () => {
   assert.equal(sdgDirection(une, 2026).text, "Getting worse");
-  assert.equal(sdgDirection({ 2026: 10, 2027: 9 }, 2026).text, "Improving");
+  assert.equal(sdgDirection({ 2026: 10e6, 2027: 9e6 }, 2026).text, "Improving");
+  assert.equal(sdgDirection({ 2026: 185.81e6, 2027: 185.79e6 }, 2026).text, "No change");   // both shown as 185.8 million
   assert.deepEqual(sdgDirection({ 2026: 10 }, 2026), { cls: "", text: "No projection yet" });
 });
 

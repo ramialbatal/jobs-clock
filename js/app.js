@@ -56,8 +56,8 @@ function people(n) {
 
 /** Class for a change where up is good (jobs) or bad (unemployment), as displayed. */
 const cls = {
-  /** @param {number} x @param {number} d */ upGood: (x, d) => ["bad", "", "good"][C.shownSign(x, d) + 1],
-  /** @param {number} x @param {number} d */ upBad: (x, d) => ["good", "", "bad"][C.shownSign(x, d) + 1]
+  /** @param {number} x @param {number} d */ upGood: (x, d) => C.changeClass(x, d, "up"),
+  /** @param {number} x @param {number} d */ upBad: (x, d) => C.changeClass(x, d, "down")
 };
 
 /** @param {Entry} e */
@@ -169,7 +169,7 @@ function render(data) {
       <p class="unemp-line"><span class="une">0</span> <small>unemployed now</small></p>
       <div class="bar" title="Unemployment rate ${pct(e.rateY)} (a full bar is the highest rate shown, ${pct(maxRate)})"><i class="u" style="width:${(e.rateY / maxRate) * 100}%"></i></div>
       <dl>
-        <div><dt>Unemployment rate ${YEAR}</dt><dd class="${cls.upBad(e.rateY - e.ratePrev, 1)}">${pct(e.rateY)} <small>(${pct(e.ratePrev)})</small></dd></div>
+        <div><dt>Unemployment rate ${YEAR}</dt><dd class="${cls.upBad(C.shown(e.rateY, 1) - C.shown(e.ratePrev, 1), 1)}">${pct(e.rateY)} <small>(${pct(e.ratePrev)})</small></dd></div>
         <div><dt>Employed ${YEAR}</dt><dd>${people(e.empY)}</dd></div>
         <div><dt>Net new jobs, all of ${YEAR}</dt><dd class="${cls.upGood(e.yearNet / 1e6, 2)}">${signed(e.yearNet / 1e6, fmt[2])} M</dd></div>
         <div><dt>Unemployed, change in ${YEAR}</dt><dd class="${cls.upBad(e.yearUne / 1e3, 0)}">${signed(e.yearUne / 1e3)} k</dd></div>
