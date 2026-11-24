@@ -8,6 +8,7 @@
 import * as C from "clock-core";
 import CFG from "./config.js";
 import { jobsEntry, keepUpVerdict, keepUpRank, sdgDirection, worldSummary, subtractSeries, rateFromLevels } from "./model.js";
+import { headline, keepUpStatus, rateStatus, sdgStatus, countryBadge } from "./messages.js";
 
 const { YEAR, fmt, pct, signed, setText, escapeHtml } = C;
 /** @param {string} id */
@@ -151,6 +152,16 @@ function render(data) {
   $("w-net-year").textContent = people(world.yearNet);
   const goalTick = renderGoal(world);
 
+  // The answer and the traffic lights
+  C.showAnswer(headline(world.per100, world.yearUne));
+  $("status-cards").innerHTML = [
+    C.statusCard({ label: "Enough new jobs for new workers?", msg: keepUpStatus(world.per100, world.yearUne),
+      pct: world.per100, barLabel: world.per100 == null ? "" : `${fmt[0].format(world.per100)} jobs per 100 new workers` }),
+    C.statusCard({ label: "Unemployment", msg: rateStatus(world.rateY, world.ratePrev) }),
+    C.statusCard({ label: "UN goal: decent work for all by 2030",
+      msg: sdgStatus(sdgDirection(world.une).text, sum.sdgChangePct, CFG.sdgBaseYear) })
+  ].join("");
+
   // The rate bar is scaled to the highest rate shown, and says so.
   const maxRate = Math.max(...entries.map((e) => e.rateY));
   const grid = $("grid");
@@ -158,25 +169,30 @@ function render(data) {
   const cards = entries.map((e) => {
     const el = document.createElement("article");
     el.className = "card" + (e.rest ? " rest" : "");
+    const badge = countryBadge(e.per100, e.yearUne);
     el.innerHTML = `
       <header>
         <span class="flag" aria-hidden="true">${e.flag}</span>
         <h3>${escapeHtml(e.name)}</h3>
         ${e.partOf ? `<span class="tag">part of ${escapeHtml(e.partOf)}</span>` : ""}
-        ${e.rest ? "" : sparkFor(e)}
+        ${C.badge(badge.tone, badge.label)}
       </header>
       <div class="ytd"><span class="num">0</span> <small class="num-label">net jobs added in ${YEAR}</small></div>
-      <p class="unemp-line"><span class="une">0</span> <small>unemployed now</small></p>
-      <div class="bar" title="Unemployment rate ${pct(e.rateY)} (a full bar is the highest rate shown, ${pct(maxRate)})"><i class="u" style="width:${(e.rateY / maxRate) * 100}%"></i></div>
-      <dl>
-        <div><dt>Unemployment rate ${YEAR}</dt><dd class="${cls.upBad(C.shown(e.rateY, 1) - C.shown(e.ratePrev, 1), 1)}">${pct(e.rateY)} <small>(${pct(e.ratePrev)})</small></dd></div>
-        <div><dt>Employed ${YEAR}</dt><dd>${people(e.empY)}</dd></div>
-        <div><dt>Net new jobs, all of ${YEAR}</dt><dd class="${cls.upGood(e.yearNet / 1e6, 2)}">${signed(e.yearNet / 1e6, fmt[2])} M</dd></div>
-        <div><dt>Unemployed, change in ${YEAR}</dt><dd class="${cls.upBad(e.yearUne / 1e3, 0)}">${signed(e.yearUne / 1e3)} k</dd></div>
-        <div class="wide"><dt>Net jobs since you opened this page</dt><dd class="since">0</dd></div>
-      </dl>
-      ${cardGoalHtml(e)}
-      ${e.rest ? "" : `<button type="button" class="more" aria-expanded="false">Yearly data <span aria-hidden="true">▾</span></button>${historyTable(e)}`}`;
+      <p class="unemp-line"><span class="une">0</span> <small>looking for work now (${pct(e.rateY)})</small></p>
+      <details class="more-info">
+        <summary>More</summary>
+        ${e.rest ? "" : sparkFor(e)}
+        <div class="bar" title="Unemployment rate ${pct(e.rateY)} (a full bar is the highest rate shown, ${pct(maxRate)})"><i class="u" style="width:${(e.rateY / maxRate) * 100}%"></i></div>
+        <dl>
+          <div><dt>Unemployment rate ${YEAR}</dt><dd class="${cls.upBad(C.shown(e.rateY, 1) - C.shown(e.ratePrev, 1), 1)}">${pct(e.rateY)} <small>(${pct(e.ratePrev)})</small></dd></div>
+          <div><dt>Employed ${YEAR}</dt><dd>${people(e.empY)}</dd></div>
+          <div><dt>Net new jobs, all of ${YEAR}</dt><dd class="${cls.upGood(e.yearNet / 1e6, 2)}">${signed(e.yearNet / 1e6, fmt[2])} M</dd></div>
+          <div><dt>Unemployed, change in ${YEAR}</dt><dd class="${cls.upBad(e.yearUne / 1e3, 0)}">${signed(e.yearUne / 1e3)} k</dd></div>
+          <div class="wide"><dt>Net jobs since you opened this page</dt><dd class="since">0</dd></div>
+        </dl>
+        ${cardGoalHtml(e)}
+        ${e.rest ? "" : `<button type="button" class="more" aria-expanded="false">Yearly data <span aria-hidden="true">▾</span></button>${historyTable(e)}`}
+      </details>`;
     C.wireHistory(el);
     grid.appendChild(el);
     return {
@@ -197,6 +213,7 @@ function render(data) {
   const sortCards = () => C.sortInto(grid, cards, keys[sortSel.value]);
   sortSel.onchange = sortCards;
   sortCards();
+  C.wireShowAll(grid, $("show-all"), cards.length);
 
   const opened = C.tYears(T0);
   const openedJobs = new Map(cards.map((c) => [c, c.e.jobsAt(opened)]));

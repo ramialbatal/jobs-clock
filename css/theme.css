@@ -7,9 +7,6 @@
 .hero.unemp .big { color: var(--unemp); text-shadow: 0 0 28px rgba(255,138,91,.3); }
 .hero.unemp .progress i { background: linear-gradient(90deg, #ffc59b, var(--unemp)); }
 .big.mid { font-size: clamp(1.8rem, 5vw, 3.4rem); }
-.hero .stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-.versus { margin: 14px 0 40px; padding: 14px 18px; text-align: center; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
-.versus b { color: var(--text); font-family: var(--mono); }
 .ytd.neg { color: var(--bad); }   /* net jobs lost */
 .unemp-line { font-family: var(--mono); font-variant-numeric: tabular-nums; color: #ffc59b; font-size: 1.05rem; margin: 0 0 8px; }
 .unemp-line small { font-family: system-ui, sans-serif; color: var(--muted); font-size: .75rem; }
@@ -18,3 +15,8 @@
 @media (max-width: 760px) { .duo { grid-template-columns: 1fr; } }
 .goal .sdg { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }
 .goal .sdg h3 { margin: 0; font-size: 1rem; }
+.hero .unit b { color: var(--text); font-family: var(--mono); }
+.hero-more { text-align: center; margin: 12px 0 40px; }
+.hero-more p { color: var(--muted); font-size: .92rem; max-width: 720px; margin: 10px auto 0; }
+.hero-more b { color: var(--text); font-family: var(--mono); }
+.hero-more .progress { max-width: 640px; }

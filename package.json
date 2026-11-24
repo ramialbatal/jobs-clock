@@ -30,6 +30,7 @@
       "#g-jobs"
     ],
     "verdicts": [
+      "#answer-title",
       "#goal-verdict",
       "#sdg-verdict"
     ]
