@@ -15,8 +15,6 @@
 .unemp-line { font-family: var(--mono); font-variant-numeric: tabular-nums; color: #ffc59b; font-size: 1.05rem; margin: 0 0 8px; }
 .unemp-line small { font-family: system-ui, sans-serif; color: var(--muted); font-size: .75rem; }
 .bar i.u { background: var(--unemp); }
-dd.bad { color: var(--bad); } dd.good { color: var(--good); }
-.history td.bad { color: var(--bad); } .history td.good { color: var(--good); }
 .spark polyline { stroke: var(--unemp); } .spark circle { fill: var(--unemp); }
 @media (max-width: 760px) { .duo { grid-template-columns: 1fr; } }
 .goal .sdg { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }

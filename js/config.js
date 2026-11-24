@@ -1,15 +1,25 @@
-/*
- * Which countries to show, and where the official data comes from.
+// @ts-check
+/**
+ * Jobs Clock settings: ILOSTAT indicators and countries. Change things here first.
  *
- * Data is fetched live in the browser from the ILOSTAT API (International Labour
- * Organization), which sends `Access-Control-Allow-Origin: *`, so no server is needed.
- * The series are the ILO modelled estimates (ILOEST): comparable figures for every
- * country, including the ILO's own estimates for the current and next year.
- * Values are in thousands of people, ages 15+.
+ * Data is fetched live in the browser from the ILOSTAT API (International Labour Organization),
+ * which sends `Access-Control-Allow-Origin: *`, so no server is needed. The series are the
+ * ILO modelled estimates (ILOEST): comparable figures for every country, including the ILO's own
+ * estimates for the current and next year. Values are in thousands of people, ages 15+.
  *
  * To add a country, add its ISO 3166-1 alpha-3 code (ILO uses X01 for the world, X92 for the EU-27).
  */
-window.JOBS_CONFIG = {
+
+/**
+ * @typedef {{ code: string, flag: string, name: string, partOf?: string }} Country
+ * @typedef {{
+ *   apiBase: string, indicators: { employed: string, unemployed: string, rate: string },
+ *   source: string, sourceUrl: string, historyFrom: number, world: string, countries: Country[]
+ * }} Config
+ */
+
+/** @type {Config} */
+export default {
   apiBase: "https://rplumber.ilo.org/data/indicator/",
   indicators: {
     employed: "EMP_2EMP_SEX_AGE_NB_A",    // employment, thousands

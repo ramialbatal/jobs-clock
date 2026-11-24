@@ -1,5 +1,7 @@
 # Jobs Clock
 
+![Preview](img/og-image.png)
+
 **Live site: https://ramialbatal.github.io/jobs-clock/**
 
 A static, real-time clock of **net new jobs** so far this year, next to the number of **unemployed people**, for the world and major economies.
@@ -24,3 +26,31 @@ New workers = growth in the labour force (employed plus unemployed) over the cal
 jobs with new workers; at 100 or more per 100, unemployment falls. Countries with a shrinking workforce are judged on
 whether unemployment is falling. A second check shows the direction of unemployment toward the UN's 2030 goal of full
 employment (SDG target 8.5), which has no numeric target.
+
+## Run it and check it
+
+```sh
+npm run serve        # then open http://localhost:8000
+npm install          # dev tools only: TypeScript checker, Playwright, clock-core (types and tests)
+npm run check        # house style + types + unit tests
+npm run smoke        # real browser, real data, desktop and phone
+```
+
+Settings live in `js/config.js`, calculations in `js/model.js` (unit tested), page code in `js/app.js`. Shared helpers
+and styles come from [clock-core](https://github.com/ramialbatal/clock-core), pinned to a release in `index.html`.
+How the clocks are built, lessons learned and rules for new code: [developer notes](https://github.com/ramialbatal/clock-core/tree/main/docs).
+
+## Contributing
+
+Ideas, fixes and new data sources are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md). Part of
+[AI for things that matter](https://ramialbatal.github.io/), alongside the
+[Emissions](https://github.com/ramialbatal/emissions-clock), [Renewables](https://github.com/ramialbatal/renewables-clock)
+and [Jobs](https://github.com/ramialbatal/jobs-clock) clocks.
+
+## Licence
+
+Code: [MIT](LICENSE). Data is fetched live from its publishers and stays under their licences:
+
+| Source | Used for | Licence |
+|---|---|---|
+| ILO, modelled estimates (ILOSTAT) | employment, unemployment, unemployment rate | CC BY 4.0 |
