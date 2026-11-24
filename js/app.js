@@ -7,6 +7,7 @@
  */
 import * as C from "clock-core";
 import CFG from "./config.js";
+import actions from "./actions.js";
 import { jobsEntry, keepUpVerdict, keepUpRank, sdgDirection, worldSummary, subtractSeries, rateFromLevels } from "./model.js";
 import { headline, keepUpStatus, rateStatus, sdgStatus, countryBadge } from "./messages.js";
 import { jobsScene } from "./scene.js";
@@ -259,7 +260,9 @@ async function show() {
 
 // Language first (the inline script in index.html chose it), so everything below is drawn in it.
 await C.startLanguage((code) => import(`./i18n/${code}.js`), document.querySelector("header.top .wrap"));
+C.startStats();
 C.wireEmbed(document.querySelector("footer.foot"));
+C.wireActions(actions);
 C.startScene(document.querySelector("canvas.scene"), jobsScene(), { groundAt: document.querySelector("header.top") });
 C.wireHelp();
 C.fill("year", YEAR);
