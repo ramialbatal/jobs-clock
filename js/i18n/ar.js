@@ -68,7 +68,7 @@ export default {
   "help.done": "فهمت",
 
   "f.about": "<strong>ساعة الوظائف</strong> تقدّر عدد صافي الوظائف الجديدة التي يضيفها العالم والاقتصادات الكبرى هذا العام، إلى جانب عدد من ما زالوا يبحثون عن عمل، وتُحدَّث كل ثانية بناءً على تقديرات منظمة العمل الدولية.",
-  "f.related": "اطّلع أيضًا على <a href=\"https://ramialbatal.github.io/emissions-clock/\">ساعة الانبعاثات</a> و<a href=\"https://ramialbatal.github.io/renewables-clock/\">ساعة الطاقة المتجددة</a> · جزء من مشروع <a href=\"https://ramialbatal.github.io/\">AI for things that matter</a>",
+  "f.related": "اطّلع أيضًا على <a href=\"https://ramialbatal.github.io/emissions-clock/\">ساعة الانبعاثات</a> و<a href=\"https://ramialbatal.github.io/renewables-clock/\">ساعة الطاقة المتجددة</a> و<a href=\"https://ramialbatal.github.io/peace-clock/\">ساعة السلام</a> · جزء من مشروع <a href=\"https://ramialbatal.github.io/\">AI for things that matter</a>",
   "f.note": "تقديرات فقط · تُجلب البيانات من جديد في كل زيارة",
 
   "msg.head.shrinkDown.t": "عدد أقل من العاطلين عن العمل",
