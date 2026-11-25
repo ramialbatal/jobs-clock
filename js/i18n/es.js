@@ -69,7 +69,7 @@ export default {
   "help.done": "Entendido",
 
   "f.about": "El <strong>Reloj del empleo</strong> estima cuántos empleos netos nuevos suman este año el mundo y las grandes economías, junto a cuántas personas siguen buscando trabajo, y se actualiza cada segundo con estimaciones de la OIT.",
-  "f.related": "Mira también el <a href=\"https://ramialbatal.github.io/emissions-clock/\">Reloj de emisiones</a>, el <a href=\"https://ramialbatal.github.io/renewables-clock/\">Reloj de renovables</a> y el <a href=\"https://ramialbatal.github.io/peace-clock/\">Reloj de la paz</a> · Forma parte de <a href=\"https://ramialbatal.github.io/\">AI for things that matter</a>",
+  "f.related": "Mira también el <a href=\"https://ramialbatal.github.io/emissions-clock/\">Reloj de emisiones</a>, el <a href=\"https://ramialbatal.github.io/renewables-clock/\">Reloj de renovables</a>, el <a href=\"https://ramialbatal.github.io/peace-clock/\">Reloj de la paz</a> y el <a href=\"https://ramialbatal.github.io/warming-clock/\">Reloj del calentamiento</a> · Forma parte de <a href=\"https://ramialbatal.github.io/\">AI for things that matter</a>",
   "f.note": "Son estimaciones · los datos se actualizan en cada visita",
 
   "msg.head.shrinkDown.t": "Menos personas sin trabajo",
