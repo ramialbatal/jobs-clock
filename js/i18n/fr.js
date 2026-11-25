@@ -69,7 +69,7 @@ export default {
   "help.done": "Compris",
 
   "f.about": "<strong>L’Horloge de l’emploi</strong> estime combien d’emplois nets le monde et les grandes économies créent cette année, et combien de personnes cherchent encore du travail. Elle est mise à jour chaque seconde à partir des estimations de l’OIT.",
-  "f.related": "Voir aussi l’<a href=\"https://ramialbatal.github.io/emissions-clock/\">Horloge des émissions</a>, l’<a href=\"https://ramialbatal.github.io/renewables-clock/\">Horloge des renouvelables</a> et l’<a href=\"https://ramialbatal.github.io/peace-clock/\">Horloge de la paix</a> · Fait partie de <a href=\"https://ramialbatal.github.io/\">AI for things that matter</a>",
+  "f.related": "Voir aussi l’<a href=\"https://ramialbatal.github.io/emissions-clock/\">Horloge des émissions</a>, l’<a href=\"https://ramialbatal.github.io/renewables-clock/\">Horloge des renouvelables</a>, l’<a href=\"https://ramialbatal.github.io/peace-clock/\">Horloge de la paix</a> et l’<a href=\"https://ramialbatal.github.io/warming-clock/\">Horloge du réchauffement</a> · Fait partie de <a href=\"https://ramialbatal.github.io/\">AI for things that matter</a>",
   "f.note": "Estimations uniquement · données actualisées à chaque visite",
 
   "msg.head.shrinkDown.t": "Moins de personnes sans emploi",
