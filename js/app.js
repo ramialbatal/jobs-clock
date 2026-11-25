@@ -267,5 +267,4 @@ C.startScene(document.querySelector("canvas.scene"), jobsScene(), { groundAt: do
 C.wireHelp();
 C.fill("year", YEAR);
 C.fill("source", CFG.source);
-$("retry").addEventListener("click", () => { C.setState("loading"); show(); });
 show();
